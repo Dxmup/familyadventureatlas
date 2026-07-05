@@ -1,0 +1,10 @@
+{
+  "name": "hensel-adventure-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Hensel family Adventure Atlas — a static living guide plus an on-demand live-events API.",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest"
+  }
+}
