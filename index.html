@@ -463,17 +463,17 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-const THEMES={
+let THEMES={
   wa:["Water","var(--t-wa)"], sc:["Science","var(--t-sc)"], an:["Animals","var(--t-an)"],
   na:["Nature","var(--t-na)"], hi:["History","var(--t-hi)"], tp:["Theme Parks","var(--t-tp)"],
   fo:["Food","var(--t-fo)"], wk:["Walkability","var(--t-wk)"]
 };
-const SPOKES={
+let SPOKES={
   NW:"NW · Tennessee Valley → Gateway West", N:"N · Blue Ridge → Ohio Valley",
   NE:"NE · Shenandoah → Mid-Atlantic", SE:"SE · Lowcountry → First Coast",
   S:"S · I-75 → Nature Coast"
 };
-const CITIES={
+let CITIES={
   Atlanta:{spoke:"S",drive:"~2h",overlook:"Doll's Head Trail — a free folk-art walk through an old quarry made of salvaged doll heads."},
   Chattanooga:{spoke:"NW",drive:"~2.5h",overlook:"Reflection Riding — red wolves & raptors on 15 miles of quiet trails."},
   Nashville:{spoke:"NW",drive:"~4h",overlook:"Lane Motor Museum's free rides in the world's weirdest cars."},
@@ -500,7 +500,7 @@ const CITIES={
 };
 // Live event-calendar resources per city (verified Jul 2026). Artifacts can't fetch, so these
 // open the real calendars in a new tab — check them dynamically for a given travel weekend.
-const EVENTS={
+let EVENTS={
   "Atlanta":[{n:"Time Out Atlanta",u:"https://www.timeout.com/atlanta/things-to-do",d:"curated things-to-do & events"},{n:"Discover Atlanta Events",u:"https://discoveratlanta.com/events/all/",d:"official CVB events calendar"},{n:"Atlanta Parent Top Events",u:"https://www.atlantaparent.com/topevents/",d:"family things-to-do this week"},{n:"Creative Loafing Atlanta",u:"https://creativeloafing.com/events",d:"alt-weekly events calendar"}],
   "Chattanooga":[{n:"The Pulse Events",u:"https://www.chattanoogapulse.com/local-events-calendar",d:"alt-weekly arts & entertainment"},{n:"Visit Chattanooga Events",u:"https://www.visitchattanooga.com/events/",d:"official CVB events calendar"},{n:"Macaroni KID Chattanooga",u:"https://chattanooga.macaronikid.com/",d:"family & kids events"},{n:"NOOGAtoday Events",u:"https://6amcity.com/tn/chattanooga/events",d:"local daily things-to-do"}],
   "Nashville":[{n:"Do615",u:"https://do615.com/",d:"curated things-to-do listings"},{n:"Visit Music City Events",u:"https://www.visitmusiccity.com/events",d:"official CVB events calendar"},{n:"Nashville Parent Calendar",u:"https://www.nashvilleparent.com/calendar/",d:"family & kids events calendar"},{n:"Nashville Scene Calendar",u:"https://www.nashvillescene.com/calendar/",d:"alt-weekly events calendar"}],
@@ -528,7 +528,7 @@ const EVENTS={
 // Baked event research for a specific trip weekend, keyed by city. Perishable by design:
 // each set carries an `expires` date and auto-hides its listings once that date passes
 // (the evergreen EVENTS links above always remain). Refresh via a stop's "Copy events request".
-const TRIP_EVENTS={
+let TRIP_EVENTS={
   "NC Triangle (Raleigh–Durham)":{window:"Aug 1–8, 2026",foundNice:"Jul 4, 2026",expires:"2026-08-08",items:[
     {d:"2026-08-03",n:"“Watermelon Day” @ Museum of Life & Science",m:"Durham · Mon Aug 3 · w/ admission · animals get watermelon + Hideaway Woods water play — top pick"},
     {d:"2026-08-04",n:"Movie night @ Pullen Park",m:"Raleigh · Tue Aug 4 · 7p · free · carousel, train & pedal boats on site (a Triangle atlas pick)"},
@@ -546,7 +546,7 @@ const TRIP_EVENTS={
 // Pricing is refreshed on demand, city by city. When you ask me to update a city,
 // I research current admission + a typical hotel rate and drop entries here, plus
 // the date in PRICE_DATES. Everything else in the page stays untouched.
-const PRICE_DATES={
+let PRICE_DATES={
   "Atlanta":"Jul 2026","Louisville":"Jul 2026","Cincinnati":"Jul 2026","Columbus":"Jul 2026",
   "Indianapolis":"Jul 2026","St. Louis":"Jul 2026","Savannah":"Jul 2026","Charleston":"Jul 2026",
   "St. Augustine":"Jul 2026","Orlando":"Jul 2026","Tampa / St. Pete":"Jul 2026",
@@ -555,7 +555,7 @@ const PRICE_DATES={
   "Washington DC":"Jul 2026","Williamsburg":"Jul 2026","Pittsburgh":"Jul 2026","Philadelphia":"Jul 2026",
   "Charlotte":"Jul 2026","Gatlinburg / Pigeon Forge":"Jul 2026","NC Triangle (Raleigh–Durham)":"Jul 2026"
 };
-const HOTELS={
+let HOTELS={
   "Atlanta":165,"Louisville":150,"Cincinnati":150,"Columbus":160,"Indianapolis":150,"St. Louis":150,
   "Savannah":180,"Charleston":220,"St. Augustine":200,"Orlando":150,"Tampa / St. Pete":160,
   "Nature Coast (Crystal River)":130,
@@ -563,7 +563,7 @@ const HOTELS={
   "Washington DC":240,"Williamsburg":210,"Pittsburgh":185,"Philadelphia":260,
   "Charlotte":175,"Gatlinburg / Pigeon Forge":195,"NC Triangle (Raleigh–Durham)":155
 };
-const PRICES={
+let PRICES={
   // Atlanta
   "Georgia Aquarium":"From $54.99/person dated","Zoo Atlanta":"From $37/person dated",
   "Fernbank Museum":"$25.95 adult / $23.95 child 3-12","Stone Mountain Park":"$20/vehicle parking",
@@ -745,7 +745,7 @@ const PRICES={
 };
 
 // [name, city, tags, type, age, why]
-const A=[
+let A=[
 ["Georgia Aquarium","Atlanta","an,wa,sc","SIG","both","Top-5 world aquarium — whale sharks, belugas, otters; summer Glow Nights."],
 ["Zoo Atlanta","Atlanta","an,na","SIG","both","1,000+ animals incl. a huge gorilla troop; walkable, any season."],
 ["Fernbank Museum","Atlanta","sc,na,hi","SIG","both","World's largest dinosaur + hands-on NatureQuest + 2 mi of forest trails."],
@@ -1072,7 +1072,7 @@ const A=[
 ];
 
 // corridor diagrams: [title, tag, nodes[[label,kind]], connectors[], branch]
-const COR=[
+let COR=[
  ["Tennessee Valley → Gateway West","NW · Spoke 01",
   [["Greenville","home"],["Chattanooga","stay"],["Nashville","stay"],["St. Louis","stay"]],
   ["2.5h","2h","4.5h"],
@@ -1096,7 +1096,9 @@ const COR=[
 ];
 
 // ---- render corridors ----
+function renderCorridors(){
 const corEl=document.getElementById('corridors');
+corEl.innerHTML='';
 COR.forEach(c=>{
   const [title,tag,nodes,segs,branch]=c;
   let route='';
@@ -1108,19 +1110,27 @@ COR.forEach(c=>{
     `<div class="corridor"><div class="cor-tag">${tag}</div><h3>${title}</h3>
      <div class="route">${route}</div><div class="branch">${branch}</div></div>`);
 });
+}
 
 // ---- theme chips ----
+function renderThemeChips(){
 const themeRow=document.getElementById('themeRow');
+themeRow.innerHTML='';
 Object.entries(THEMES).forEach(([k,v])=>{
   themeRow.insertAdjacentHTML('beforeend',
     `<button class="chip theme" data-theme="${k}" aria-pressed="false">
        <span class="swatch" style="background:${v[1]}"></span>${v[0]}</button>`);
 });
+bind('.chip.theme',state.themes,'theme');
+}
 
 // ---- render library ----
+let order=[];
+function renderLibrary(){
 document.getElementById('totCount').textContent=A.length;
 const citiesEl=document.getElementById('cities');
-const order=Object.keys(CITIES);
+citiesEl.innerHTML='';
+order=Object.keys(CITIES);
 order.forEach(city=>{
   const meta=CITIES[city];
   const items=A.filter(a=>a[1]===city);
@@ -1165,6 +1175,8 @@ order.forEach(city=>{
          <div class="citybudget" data-city="${city}"></div></div>
        <div class="grid">${cards}</div></div>`);
 });
+bindUpdateBtns();
+}
 
 // ---- filtering ----
 const state={themes:new Set(),types:new Set(),ages:new Set(),q:''};
@@ -1199,7 +1211,6 @@ function bind(sel,set,attr){
     });
   });
 }
-bind('.chip.theme',state.themes,'theme');
 bind('.chip.type',state.types,'type');
 bind('.chip.age',state.ages,'age');
 document.getElementById('search').addEventListener('input',e=>{state.q=e.target.value.toLowerCase().trim();apply();});
@@ -1221,6 +1232,7 @@ function showToast(html){
   toast.innerHTML=html;toast.classList.add('show');
   clearTimeout(toastT);toastT=setTimeout(()=>toast.classList.remove('show'),4200);
 }
+function bindUpdateBtns(){
 document.querySelectorAll('.updateBtn').forEach(btn=>{
   btn.addEventListener('click',async()=>{
     const city=btn.dataset.city;
@@ -1239,12 +1251,13 @@ document.querySelectorAll('.updateBtn').forEach(btn=>{
       :`Ask Claude: <b>“Update prices for ${city}”</b> to refresh this city.`);
   });
 });
+}
 
 // ---- budget engine ----
 // Distances are estimated from city coordinates (great-circle × 1.2 road factor),
 // so any route the builder assembles gets a mileage without a hand-built matrix.
 const HOME="Greenville";
-const COORDS={
+let COORDS={
   "Greenville":[34.85,-82.39],"Atlanta":[33.75,-84.39],"Chattanooga":[35.05,-85.31],
   "Nashville":[36.16,-86.78],"Huntsville":[34.73,-86.59],"Knoxville":[35.96,-83.92],
   "St. Louis":[38.63,-90.20],"Louisville":[38.25,-85.76],"Cincinnati":[39.10,-84.51],
@@ -1281,7 +1294,7 @@ function recompute(){
 // ---- trip builder ----
 let itin=[];
 let dragSrc=null;
-const PRESETS={
+let PRESETS={
   "Gateway West":["Chattanooga","Nashville","St. Louis"],
   "Ohio Valley":["Knoxville","Louisville","Cincinnati","Columbus"],
   "Mid-Atlantic":["Charlotte","NC Triangle (Raleigh–Durham)","Washington DC","Williamsburg"],
@@ -1289,6 +1302,7 @@ const PRESETS={
   "Nature Coast":["Atlanta","Nature Coast (Crystal River)","Tampa / St. Pete"],
   "Smoky Mountains":["Knoxville","Gatlinburg / Pigeon Forge"]
 };
+function renderQuickRoutes(){
 const qr=document.getElementById("quickroutes");
 qr.innerHTML=Object.keys(PRESETS).map(k=>`<button class="qrbtn" data-r="${k}">${k}</button>`).join("");
 qr.querySelectorAll(".qrbtn").forEach(b=>b.addEventListener("click",()=>{
@@ -1297,8 +1311,9 @@ qr.querySelectorAll(".qrbtn").forEach(b=>b.addEventListener("click",()=>{
 }));
 const sel=document.getElementById("addStop");
 sel.innerHTML=`<option value="">+ Add a stop…</option>`+order.map(c=>`<option>${c}</option>`).join("");
-sel.addEventListener("change",()=>{if(sel.value){const n=Math.max(1,Math.round(num("nights")));
-  itin.push({city:sel.value,nights:n});sel.value="";renderItin();}});
+sel.onchange=()=>{if(sel.value){const n=Math.max(1,Math.round(num("nights")));
+  itin.push({city:sel.value,nights:n});sel.value="";renderItin();}};
+}
 
 function renderItin(){
   const el=document.getElementById("itinerary");
@@ -1515,7 +1530,7 @@ document.getElementById("recommendBtn").addEventListener("click",()=>{
 });
 document.getElementById("clearTrip").addEventListener("click",()=>{itin=[];renderItin();});
 
-const PLAYBOOKS=[
+let PLAYBOOKS=[
   {"city":"Atlanta","pitch":"Your closest big-city hit: a top-5 world aquarium, a gorilla-packed zoo, and the world's largest dinosaur all inside two hours of the driveway.","perfectDay":[{"when":"Morning","stop":"Georgia Aquarium","note":"Rope-drop it — whale sharks and belugas first while both girls are fresh; buy timed tickets in advance."},{"when":"Midday","stop":"World of Coca-Cola","note":"Right next door in Pemberton Place — the Scent Discovery and mix-your-own tasting room is a quick, low-energy pairing after the aquarium."},{"when":"Afternoon","stop":"Zoo Atlanta","note":"Save the big gorilla troop and pandas for after a car-ride reset; walkable and shaded."},{"when":"Evening","stop":"BeltLine: Ponce City + Krog St Markets","note":"Flat stroller path plus food halls — let the 9-yo pick ramen, the 5-yo gets Jeni's, everyone unwinds."}],"signature":"Georgia Aquarium","rainyDay":"Fernbank Museum","foodStop":"The food stalls inside Ponce City Market's Central Food Hall — something for every picky palate under one roof.","kidTip":"Do the aquarium at opening before the school-group crush, then use the midday Coca-Cola stop as an air-conditioned buffer so the 5-yo can recharge before the zoo's afternoon walking.","stayArea":"Midtown — walkable to the aquarium/Coke, near the BeltLine, easy highway access to the zoo."},
   {"city":"Chattanooga","pitch":"A two-building aquarium, an underground waterfall, and a gnome-filled clifftop garden make this the most kid-dense weekend on any Hensel corridor.","perfectDay":[{"when":"Morning","stop":"Tennessee Aquarium — River Journey","note":"Start in the freshwater building with otters and the walk-through forest; buy the combo ticket so you can do both."},{"when":"Midday","stop":"Tennessee Aquarium — Ocean Journey","note":"Sharks overhead and penguins — the second building is steps away across the plaza."},{"when":"Afternoon","stop":"Rock City Gardens","note":"Swinging bridge and the glowing Fairyland Caverns gnomes delight the 5-yo; the older girl loves the See-7-States overlook."},{"when":"Evening","stop":"Coolidge Park","note":"Free splash fountains and a 100-year-old carousel to burn off the last of the day right on the river."}],"signature":"Tennessee Aquarium (both buildings)","rainyDay":"Creative Discovery Museum","foodStop":"Clumpies Ice Cream in the Bluff View Art District — river views and a walkable little arts pocket.","kidTip":"Both aquarium buildings in one morning is a lot of standing — bring the stroller for the 5-yo and plan Rock City for after a lunch reset, since its clifftop paths need fresh legs.","stayArea":"Downtown near the riverfront — walk to the aquarium, Walnut Street Bridge, and Coolidge Park."},
   {"city":"Nashville","pitch":"A kangaroo walk-through zoo with a giant wooden fortress of a playground, plus splash pads and a hands-on science center, keep Music City firmly kid-first.","perfectDay":[{"when":"Morning","stop":"Nashville Zoo at Grassmere","note":"Walk-through kangaroo yard and one of the largest wooden playgrounds in the US — get there at open before the heat."},{"when":"Midday","stop":"Adventure Science Center","note":"Hands-on physics and space floors plus a planetarium — a cool, dim reset for early afternoon."},{"when":"Afternoon","stop":"Cheekwood Estate & Gardens","note":"The storybook TRAINS! trail and children's garden are perfect wander-pace for both ages."},{"when":"Evening","stop":"Bicentennial Mall + Farmers' Market","note":"Free park to run, next to a food hall with 20+ international eateries for an easy dinner."}],"signature":"Nashville Zoo at Grassmere","rainyDay":"Adventure Science Center","foodStop":"Nashville Farmers' Market food hall beside Bicentennial Mall — global stalls, casual, kid-paced.","kidTip":"Note the Parthenon is closed for HVAC through mid-July '26 — skip it and hit the free splash pads at Two Rivers or Shelby to wear the 5-yo out on a hot afternoon.","stayArea":"Near Opryland/East Nashville if you want SoundWaves water park access, or downtown-adjacent for the science center and parks."},
@@ -1540,7 +1555,7 @@ const PLAYBOOKS=[
   {"city":"Gatlinburg / Pigeon Forge","pitch":"A 2.25-hour drive drops this water-, animal- and wonder-loving family into a rare combo of world-class theme parks and the wild, salamander-filled heart of America's most-visited national park.","perfectDay":[{"when":"Morning","stop":"Cades Cove Loop","note":"Enter at dawn for the best shot at black bears and deer before crowds and heat build."},{"when":"Midday","stop":"Sugarlands Visitor Center & Salamander Creeks","note":"Cool off creekside on the flat Fighting Creek trail; grab Junior Ranger booklets for the girls."},{"when":"Afternoon","stop":"Ripley's Aquarium of the Smokies","note":"Beat afternoon storms indoors; the glass shark tunnel and stingray touch tank are AC-cooled hits."},{"when":"Evening","stop":"The Island in Pigeon Forge","note":"Free splash fountains let the 5-yo run wild while the family rides the Wheel at sunset and grabs dinner."}],"signature":"Dollywood","rainyDay":"WonderWorks","foodStop":"The Old Mill Restaurant in Pigeon Forge — Southern comfort plates beside a working 1830s gristmill.","kidTip":"Alternate one big-ticket park day with one low-key nature day so the Kindergartner doesn't melt down; carry water shoes for creek stops and pack the stroller for Dollywood's hills.","stayArea":"Base in Pigeon Forge — central to Dollywood, both water parks, and The Island, with more mid-range family hotels and a straight shot to the national park via Gatlinburg."},
   {"city":"NC Triangle (Raleigh–Durham)","pitch":"An easy 3.5-hour hop where free world-class science and history museums stack up against lemurs, ballgames, and lake beaches — a wonder-per-dollar jackpot for a curious 5- and 9-year-old.","perfectDay":[{"when":"Morning","stop":"Museum of Life and Science","note":"Arrive at 10 open; ride the train to the bears and lemurs before the heat and crowds build."},{"when":"Midday","stop":"Sarah P. Duke Gardens","note":"Picnic and feed the koi; shady terraces give the little one a stroller-nap window."},{"when":"Afternoon","stop":"Duke Lemur Center","note":"Book a mid-afternoon tour weeks ahead — it's reservation-only and the marquee memory."},{"when":"Evening","stop":"Durham Bulls Baseball","note":"Dollar-dog dinner at the ballpark; leave after the fireworks or the 7th if bedtime looms."}],"signature":"Duke Lemur Center","rainyDay":"NC Museum of Natural Sciences","foodStop":"Food-truck lunch or Bull City pizza at Durham's American Tobacco Campus, steps from the ballpark and Life & Science.","kidTip":"Bank the free museums for flexible afternoons — a 5-yo fades by 2pm, so front-load the one timed, reservation-only stop (Lemur Center) and keep the rest walk-in.","stayArea":"Base in Durham: central to the Lemur Center, Life & Science, Duke Gardens, and the Bulls, with Chapel Hill 15 min west and Raleigh 25 min east."}
 ];
-(function renderPlaybooks(){
+function renderPlaybooks(){
   const g=document.getElementById('pbGrid');if(!g)return;
   const row=(lab,val)=>`<div class="row"><span class="lab">${lab}</span><span class="val">${val}</span></div>`;
   g.innerHTML=PLAYBOOKS.map(p=>{
@@ -1559,11 +1574,49 @@ const PLAYBOOKS=[
       </div>
     </article>`;
   }).join('');
-})();
+}
 
-renderItin();
-recompute();
-apply();
+// ---- render orchestration + backend hydration ----
+// renderAll() repaints every data-driven section from the current in-memory
+// data. It runs once at boot with the baked-in data (instant, offline-safe),
+// then again if the backend returns a fresh atlas.
+function renderAll(){
+  renderCorridors();
+  renderThemeChips();
+  renderLibrary();
+  renderQuickRoutes();
+  renderPlaybooks();
+  renderItin();
+  recompute();
+  apply();
+}
+// Try to hydrate from the backend. Any failure (offline, non-200, bad/partial
+// JSON, {error}) leaves the baked-in data untouched so the page works as-is.
+async function hydrateFromApi(){
+  try{
+    const r=await fetch('/api/atlas',{cache:'no-store'});
+    if(!r.ok)return;
+    const d=await r.json();
+    if(!d||d.error||!d.CITIES)return;
+    if(d.THEMES)THEMES=d.THEMES;
+    if(d.SPOKES)SPOKES=d.SPOKES;
+    if(d.CITIES)CITIES=d.CITIES;
+    if(d.COORDS)COORDS=d.COORDS;
+    if(d.HOTELS)HOTELS=d.HOTELS;
+    if(d.PRICE_DATES)PRICE_DATES=d.PRICE_DATES;
+    if(d.PRICES)PRICES=d.PRICES;
+    if(d.A)A=d.A;
+    if(d.PLAYBOOKS)PLAYBOOKS=d.PLAYBOOKS;
+    if(d.EVENTS)EVENTS=d.EVENTS;
+    if(d.TRIP_EVENTS)TRIP_EVENTS=d.TRIP_EVENTS;
+    if(d.PRESETS)PRESETS=d.PRESETS;
+    if(d.COR)COR=d.COR;
+    renderAll();
+  }catch(e){/* keep baked-in data */}
+}
+
+renderAll();
+hydrateFromApi();
 </script>
 
 </body>
