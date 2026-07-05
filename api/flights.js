@@ -24,7 +24,7 @@
 
 import { searchCash } from "./_lib/providers/kiwi.js";
 import { searchAward } from "./_lib/providers/seatsaero.js";
-import { loadValuations } from "./_lib/valuations.js";
+import { loadValuations, loadBalances } from "./_lib/valuations.js";
 import { rankOptions } from "./_lib/arbitrage.js";
 
 export const config = { maxDuration: 30 };
@@ -62,18 +62,18 @@ export default async function handler(req, res) {
     cabin: q.cabin || "economy",
     currency: (q.currency || "USD").toUpperCase(),
   };
-  // Balances come from ?held= if provided, else fall back to a POINT_BALANCES env
-  // var (same "AMEX_MR:130000,CHASE_UR:500000" format). Keeps personal balances out
-  // of source control while still letting the deployed engine default to yours.
-  const held = parseHeld(q.held || process.env.POINT_BALANCES);
-
   try {
-    // Fan out: cash + award + valuation config, all in parallel.
-    const [cashRes, awardRes, valConfig] = await Promise.all([
+    // Fan out: cash + award + valuation config + balances, all in parallel.
+    // Balances precedence: ?held= (explicit) > Supabase point_balances > POINT_BALANCES env.
+    const [cashRes, awardRes, valConfig, dbBalances] = await Promise.all([
       searchCash(args),
       searchAward(args),
       loadValuations(),
+      q.held ? Promise.resolve(null) : loadBalances(),
     ]);
+    const held = q.held
+      ? parseHeld(q.held)
+      : dbBalances || parseHeld(process.env.POINT_BALANCES);
 
     const ranked = rankOptions({
       cash: cashRes.items,

@@ -127,3 +127,26 @@ export async function loadValuations() {
   }
   return base;
 }
+
+// loadBalances — reads the point_balances table (server-side, service key) and
+// returns { AMEX_MR: 130000, ... }. Returns null when Supabase isn't configured or
+// the read fails, so callers can fall back to ?held= / POINT_BALANCES.
+export async function loadBalances() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  try {
+    const res = await fetch(`${url}/rest/v1/point_balances?select=program,balance`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    });
+    if (!res.ok) return null;
+    const rows = await res.json();
+    if (!Array.isArray(rows) || !rows.length) return null;
+    const held = {};
+    for (const r of rows) if (r.program) held[r.program] = Number(r.balance) || 0;
+    return held;
+  } catch (err) {
+    console.error("loadBalances: supabase read failed:", err?.message || err);
+    return null;
+  }
+}
