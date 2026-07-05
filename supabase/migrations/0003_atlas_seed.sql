@@ -1147,7 +1147,7 @@ select c.id,v.n,v.u,v.d from (values
 ('Nature Coast (Crystal River)','Citrus County Chronicle','https://www.citruscountychronicle.com/events/','local newspaper events calendar')) v(ci,n,u,d) join cities c on c.name=v.ci;
 
 insert into trip_events(city_id,event_date,name,meta,date_window,expires,found_at,source)
-select c.id,v.ed,v.n,v.m,v.w,v.ex,v.fa,'baked' from (values
+select c.id,v.ed::date,v.n,v.m,v.w,v.ex::date,v.fa::date,'baked' from (values
 ('NC Triangle (Raleigh–Durham)','2026-08-03','“Watermelon Day” @ Museum of Life & Science','Durham · Mon Aug 3 · w/ admission · animals get watermelon + Hideaway Woods water play — top pick','Aug 1–8, 2026','2026-08-08',null),
 ('NC Triangle (Raleigh–Durham)','2026-08-04','Movie night @ Pullen Park','Raleigh · Tue Aug 4 · 7p · free · carousel, train & pedal boats on site (a Triangle atlas pick)','Aug 1–8, 2026','2026-08-08',null),
 ('NC Triangle (Raleigh–Durham)','2026-08-07','First Friday Market & Movie (Zootopia 2) @ Moore Square','Raleigh · Fri Aug 7 · ~7:15p · free · on-site splash pad + outdoor movie','Aug 1–8, 2026','2026-08-08',null),
