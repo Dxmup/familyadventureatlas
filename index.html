@@ -364,7 +364,11 @@
       <div class="assume"><label>Hotel / night</label><div class="ip"><span>$</span><input id="hotel" type="number" step="10" min="0" value="150"></div></div>
       <div class="assume"><label>Nights / stop</label><div class="ip"><input id="nights" type="number" step="1" min="0" value="2"></div></div>
       <div class="assume"><label>Buffer %</label><div class="ip"><input id="buffer" type="number" step="1" min="0" value="10"></div></div>
-      <p class="assume-note">Hotel is a placeholder until you refresh a city — then its real rate replaces the default.</p>
+      <div class="assume"><label>Car rental / day</label><div class="ip"><span>$</span><input id="carRate" type="number" step="5" min="0" value="65"></div></div>
+      <div class="assume"><label>Local mi / day</label><div class="ip"><input id="localMi" type="number" step="5" min="0" value="30"></div></div>
+      <div class="assume"><label>Adults</label><div class="ip"><input id="adults" type="number" step="1" min="1" value="2"></div></div>
+      <div class="assume"><label>Kids</label><div class="ip"><input id="kids" type="number" step="1" min="0" value="2"></div></div>
+      <p class="assume-note">Hotel is a placeholder until you refresh a city — then its real rate replaces the default. Car rental &amp; local miles feed the fly-vs-drive comparison below.</p>
     </div>
     <div class="builder">
       <div class="builder-head">Trip Builder — chain stops into one estimate</div>
@@ -380,6 +384,31 @@
       </div>
       <div class="itinerary" id="itinerary"></div>
       <div class="tripsummary" id="tripSummary"></div>
+      <style>
+        .flycompare{margin-top:14px}
+        .fly-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
+        .fly-controls label{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600}
+        .fly-controls .ip{max-width:130px}
+        .mc-head{font-weight:700;margin-bottom:8px}
+        .mc-head small{font-weight:500;opacity:.7}
+        .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .mc-card{border:1px solid rgba(128,128,128,.3);border-radius:10px;padding:12px}
+        .mc-card.win{border-color:#2e9e5b;box-shadow:0 0 0 1px #2e9e5b inset}
+        .mc-mode{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;opacity:.75}
+        .mc-tot{font-size:1.4rem;font-weight:800;margin:2px 0}
+        .mc-bk{font-size:.78rem;opacity:.7;line-height:1.45}
+        .mc-verdict{margin-top:10px;font-size:.95rem}
+        .mc-verdict.muted{opacity:.6;font-weight:500}
+        @media(max-width:560px){.mc-grid{grid-template-columns:1fr}}
+      </style>
+      <div class="flycompare" id="flyWrap">
+        <div class="fly-controls">
+          <label>RT airfare (party) <div class="ip"><span>$</span><input id="airfare" type="number" step="10" min="0" placeholder="0"></div></label>
+          <button class="qrbtn" id="fetchFare" type="button">✈️ Fetch live fare</button>
+          <span class="assume-note" id="fareNote" style="margin:0"></span>
+        </div>
+        <div class="modecompare" id="modeCompare"></div>
+      </div>
       <div class="tripevents" id="tripEvents"></div>
     </div>
   </div>
@@ -1380,7 +1409,7 @@ function recommend(){
 }
 function computeTrip(){
   const box=document.getElementById("tripSummary");
-  if(!itin.length){box.innerHTML="";return;}
+  if(!itin.length){box.innerHTML="";const mc=document.getElementById("modeCompare");if(mc)mc.innerHTML="";return;}
   const gas=num("gas"),mpg=num("mpg")||25,food=num("food"),pct=num("buffer");
   const route=[HOME,...itin.map(s=>s.city),HOME];
   let miles=0;for(let i=1;i<route.length;i++)miles+=dist(route[i-1],route[i]);
@@ -1397,7 +1426,64 @@ function computeTrip(){
    +`<div class="ts-row"><span><i>BUFFER</i>${pct}% contingency</span><b>${money(buf)}</b></div>`
    +`<div class="ts-row total"><span>Trip base</span><b>${money(tot)}</b></div>`
    +`<p class="ts-note">Base travel + lodging + food only. Add the attractions you choose on top — refresh each city's prices to fill those in.</p>`;
+  computeFly({fuel,lodge,foodc,pct,days,driveTot:tot,gas,mpg});
   renderTripEvents();
+}
+// ---- drive vs fly comparison ----
+// Fly total swaps road fuel for: airfare (whole party) + a rental car (rate × trip
+// days) + local gas at the destination, keeping lodging/food/buffer the same so the
+// two modes are directly comparable.
+const HOME_AIRPORT="GSP";
+function farthestStop(){
+  if(!itin.length)return null;
+  let best=null,bd=-1;
+  itin.forEach(s=>{const d=dist(HOME,s.city);if(d>bd){bd=d;best=s.city;}});
+  if(!best)return null;
+  return {city:best,airport:(CITIES[best]&&CITIES[best].airport)||null};
+}
+function computeFly(o){
+  const fc=document.getElementById("modeCompare");if(!fc)return;
+  const far=farthestStop();
+  const airfare=num("airfare"),carRate=num("carRate"),localMi=num("localMi");
+  const rental=carRate*o.days, localGas=localMi*o.days/(o.mpg||25)*o.gas;
+  const flyTot=(airfare+rental+localGas+o.lodge+o.foodc)*(1+o.pct/100);
+  const win=airfare>0?(flyTot<o.driveTot?'fly':'drive'):'';
+  const delta=Math.abs(o.driveTot-flyTot);
+  const dest=far?`${HOME_AIRPORT}→${far.airport||'?'} · ${far.city}${far.airport?'':' (no airport)'}`:'';
+  fc.innerHTML=
+    `<div class="mc-head">Drive vs Fly${dest?` <small>fly ${dest}</small>`:''}</div>`
+   +`<div class="mc-grid">`
+   +`<div class="mc-card${win==='drive'?' win':''}"><div class="mc-mode">🚗 Drive</div><div class="mc-tot">${money(o.driveTot)}</div>`
+     +`<div class="mc-bk">fuel ${money(o.fuel)} · lodging ${money(o.lodge)} · food ${money(o.foodc)} · +${o.pct}%</div></div>`
+   +`<div class="mc-card${win==='fly'?' win':''}"><div class="mc-mode">✈️ Fly</div><div class="mc-tot">${airfare>0?money(flyTot):'—'}</div>`
+     +`<div class="mc-bk">airfare ${airfare>0?money(airfare):'(enter)'} · rental ${money(rental)} (${o.days}d×${money(carRate)}) · local gas ${money(localGas)} · lodging ${money(o.lodge)} · food ${money(o.foodc)} · +${o.pct}%</div></div>`
+   +`</div>`
+   +(airfare>0?`<div class="mc-verdict">${win==='fly'?'✈️ Flying':'🚗 Driving'} is cheaper by <b>${money(delta)}</b></div>`
+              :`<div class="mc-verdict muted">Enter a round-trip airfare above (or ✈️ Fetch live) to compare total cost.</div>`);
+}
+async function fetchAirfare(){
+  const note=document.getElementById("fareNote");
+  const far=farthestStop();
+  if(!far){note.textContent="Add a stop first.";return;}
+  if(!far.airport){note.textContent=`No airport mapped for ${far.city}.`;return;}
+  const sv=document.getElementById("tripStart").value;
+  if(!sv){note.textContent="Set a trip start date first.";return;}
+  const totalNights=itin.reduce((s,x)=>s+x.nights,0);
+  const p=sv.split("-").map(Number);const start=new Date(p[0],p[1]-1,p[2]);
+  const ret=new Date(start);ret.setDate(ret.getDate()+Math.max(1,totalNights));
+  const adults=Math.max(1,Math.round(num("adults"))),kids=Math.max(0,Math.round(num("kids")));
+  note.textContent="Searching fares…";
+  try{
+    const q=`/api/flights?from=${HOME_AIRPORT}&to=${far.airport}&depart=${sv}&return=${isoDate(ret)}&adults=${adults}&children=${kids}`;
+    const r=await fetch(q);const d=await r.json();
+    if(d&&d.error){note.textContent="Fare lookup failed — enter airfare manually.";return;}
+    const cash=d&&d.bestCash&&d.bestCash.effectiveUsd;
+    if(cash){document.getElementById("airfare").value=Math.round(cash);
+      note.textContent=`${HOME_AIRPORT}→${far.airport} · ${adults+kids} travelers`;computeTrip();}
+    else if(d&&d.sources&&d.sources.kiwi&&d.sources.kiwi.configured===false){
+      note.textContent="Live fares need KIWI_API_KEY in Vercel — enter airfare manually.";}
+    else{note.textContent="No fares found — enter airfare manually.";}
+  }catch(e){note.textContent="Fare lookup error — enter airfare manually.";}
 }
 // ---- trip event calendar ----
 // Once cities (and optionally a start date) are chosen, stamp each stop with its date
@@ -1519,6 +1605,9 @@ async function loadLiveEvents(btn){
 document.getElementById("tripStart").addEventListener("input",renderTripEvents);
 ["gas","mpg","food","hotel","nights","buffer"].forEach(id=>
   document.getElementById(id).addEventListener("input",recompute));
+["carRate","localMi","adults","kids","airfare"].forEach(id=>
+  document.getElementById(id).addEventListener("input",computeTrip));
+document.getElementById("fetchFare").addEventListener("click",fetchAirfare);
 
 document.getElementById("recommendBtn").addEventListener("click",()=>{
   if(itin.length<2){showToast("Add at least two stops, then I'll find the shortest loop.");return;}

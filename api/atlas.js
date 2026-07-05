@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     for (const c of citiesR) {
       if (c.lat != null && c.lng != null) COORDS[c.name] = [Number(c.lat), Number(c.lng)];
       if (c.is_home) continue; // Greenville: origin only, not a destination card
-      CITIES[c.name] = { spoke: c.spoke, drive: c.drive, overlook: c.overlook };
+      CITIES[c.name] = { spoke: c.spoke, drive: c.drive, overlook: c.overlook, airport: c.airport };
       if (c.hotel_rate != null) HOTELS[c.name] = c.hotel_rate;
       if (c.price_dates) PRICE_DATES[c.name] = c.price_dates;
     }
