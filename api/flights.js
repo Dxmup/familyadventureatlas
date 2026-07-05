@@ -62,7 +62,10 @@ export default async function handler(req, res) {
     cabin: q.cabin || "economy",
     currency: (q.currency || "USD").toUpperCase(),
   };
-  const held = parseHeld(q.held);
+  // Balances come from ?held= if provided, else fall back to a POINT_BALANCES env
+  // var (same "AMEX_MR:130000,CHASE_UR:500000" format). Keeps personal balances out
+  // of source control while still letting the deployed engine default to yours.
+  const held = parseHeld(q.held || process.env.POINT_BALANCES);
 
   try {
     // Fan out: cash + award + valuation config, all in parallel.

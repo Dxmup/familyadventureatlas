@@ -44,6 +44,9 @@ export const DEFAULT_VALUATIONS = {
   EK_SKYWARDS: 1.2, // Emirates
   JETBLUE_TP: 1.3,
   SW_RR: 1.35, // Southwest Rapid Rewards
+  LH_MILES_AND_MORE: 1.4, // Lufthansa Miles & More
+  // Hotel programs (used for hotel-side valuation / Bonvoy->airline transfers)
+  BONVOY: 0.7, // Marriott Bonvoy
 };
 
 // ---------------------------------------------------------------------------
