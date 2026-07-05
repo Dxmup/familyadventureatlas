@@ -16,6 +16,8 @@
 // ---------------------------------------------------------------------------
 // Transferable "bank" currencies you might hold (from credit-card rewards).
 // ---------------------------------------------------------------------------
+import { SUPABASE_URL, SUPABASE_KEY, HAS_SERVICE_KEY } from "./supabase.js";
+
 export const BANK_CURRENCIES = ["AMEX_MR", "CHASE_UR", "CITI_TYP", "CAP1", "BILT"];
 
 // ---------------------------------------------------------------------------
@@ -101,9 +103,9 @@ export async function loadValuations() {
     source: "built-in defaults",
   };
 
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
-  if (!url || !key) return base;
+  // Server-only tables — only readable with a service key. Without one, keep defaults.
+  if (!HAS_SERVICE_KEY) return base;
+  const url = SUPABASE_URL, key = SUPABASE_KEY;
 
   try {
     const headers = { apikey: key, Authorization: `Bearer ${key}` };
@@ -132,12 +134,11 @@ export async function loadValuations() {
 // returns { AMEX_MR: 130000, ... }. Returns null when Supabase isn't configured or
 // the read fails, so callers can fall back to ?held= / POINT_BALANCES.
 export async function loadBalances() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
+  // point_balances is server-only; needs a service key. Else caller falls back to env.
+  if (!HAS_SERVICE_KEY) return null;
   try {
-    const res = await fetch(`${url}/rest/v1/point_balances?select=program,balance`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/point_balances?select=program,balance`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
     });
     if (!res.ok) return null;
     const rows = await res.json();

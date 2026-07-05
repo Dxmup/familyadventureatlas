@@ -10,14 +10,13 @@
 //
 // Env: SUPABASE_URL + (SUPABASE_SERVICE_KEY | SUPABASE_ANON_KEY)
 
+import { SUPABASE_URL, SUPABASE_KEY } from "./_lib/supabase.js";
+
 export const config = { maxDuration: 15 };
 
 async function sb(path) {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
-  if (!url || !key) throw new Error("Supabase env not configured");
-  const res = await fetch(`${url}/rest/v1/${path}`, {
-    headers: { apikey: key, Authorization: `Bearer ${key}` },
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   });
   if (!res.ok) throw new Error(`Supabase ${res.status} on ${path}: ${await res.text()}`);
   return res.json();
