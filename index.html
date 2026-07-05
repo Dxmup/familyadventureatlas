@@ -1480,8 +1480,8 @@ async function fetchAirfare(){
     const cash=d&&d.bestCash&&d.bestCash.effectiveUsd;
     if(cash){document.getElementById("airfare").value=Math.round(cash);
       note.textContent=`${HOME_AIRPORT}→${far.airport} · ${adults+kids} travelers`;computeTrip();}
-    else if(d&&d.sources&&d.sources.kiwi&&d.sources.kiwi.configured===false){
-      note.textContent="Live fares need KIWI_API_KEY in Vercel — enter airfare manually.";}
+    else if(d&&d.sources&&d.sources.serpapi&&d.sources.serpapi.configured===false&&d.sources.kiwi&&d.sources.kiwi.configured===false){
+      note.textContent="Live fares need SERPAPI_KEY (or KIWI_API_KEY) in Vercel — enter airfare manually.";}
     else{note.textContent="No fares found — enter airfare manually.";}
   }catch(e){note.textContent="Fare lookup error — enter airfare manually.";}
 }

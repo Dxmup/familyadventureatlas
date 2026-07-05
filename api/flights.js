@@ -23,6 +23,7 @@
 //   SUPABASE_URL + SUPABASE_SERVICE_KEY   live valuation/bonus overlay
 
 import { searchCash } from "./_lib/providers/kiwi.js";
+import { searchCashSerp } from "./_lib/providers/serpapi.js";
 import { searchAward } from "./_lib/providers/seatsaero.js";
 import { loadValuations, loadBalances } from "./_lib/valuations.js";
 import { rankOptions } from "./_lib/arbitrage.js";
@@ -65,8 +66,9 @@ export default async function handler(req, res) {
   try {
     // Fan out: cash + award + valuation config + balances, all in parallel.
     // Balances precedence: ?held= (explicit) > Supabase point_balances > POINT_BALANCES env.
-    const [cashRes, awardRes, valConfig, dbBalances] = await Promise.all([
+    const [cashRes, serpRes, awardRes, valConfig, dbBalances] = await Promise.all([
       searchCash(args),
+      searchCashSerp(args),
       searchAward(args),
       loadValuations(),
       q.held ? Promise.resolve(null) : loadBalances(),
@@ -75,8 +77,9 @@ export default async function handler(req, res) {
       ? parseHeld(q.held)
       : dbBalances || parseHeld(process.env.POINT_BALANCES);
 
+    const cashItems = [...cashRes.items, ...serpRes.items];
     const ranked = rankOptions({
-      cash: cashRes.items,
+      cash: cashItems,
       awards: awardRes.items,
       held,
       config: valConfig,
@@ -87,6 +90,7 @@ export default async function handler(req, res) {
       heldCurrencies: Object.keys(held),
       sources: {
         kiwi: { configured: cashRes.configured, count: cashRes.items.length, error: cashRes.error || null },
+        serpapi: { configured: serpRes.configured, count: serpRes.items.length, error: serpRes.error || null },
         seatsAero: { configured: awardRes.configured, count: awardRes.items.length, error: awardRes.error || null },
         valuations: valConfig.source,
       },
