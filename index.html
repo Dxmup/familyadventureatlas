@@ -403,8 +403,9 @@
       </style>
       <div class="flycompare" id="flyWrap">
         <div class="fly-controls">
+          <label>Depart from <select id="depAirport"><option value="GSP">GSP · Greenville (home)</option><option value="ATL">ATL · Atlanta (+drive)</option><option value="CLT">CLT · Charlotte (+drive)</option></select></label>
           <label>RT airfare (party) <div class="ip"><span>$</span><input id="airfare" type="number" step="10" min="0" placeholder="0"></div></label>
-          <button class="qrbtn" id="fetchFare" type="button">✈️ Fetch live fare</button>
+          <button class="qrbtn" id="fetchFare" type="button">✈️ Fetch cheapest fare</button>
           <span class="assume-note" id="fareNote" style="margin:0"></span>
         </div>
         <div class="modecompare" id="modeCompare"></div>
@@ -1433,7 +1434,12 @@ function computeTrip(){
 // Fly total swaps road fuel for: airfare (whole party) + a rental car (rate × trip
 // days) + local gas at the destination, keeping lodging/food/buffer the same so the
 // two modes are directly comparable.
-const HOME_AIRPORT="GSP";
+// Departure airports we'll fly from. GSP is home (no drive); ATL/CLT are bigger,
+// often cheaper hubs but you must drive there and back, so their fair cost includes
+// round-trip drive-to-airport fuel.
+const DEP_OPTS=[["GSP",null],["ATL","Atlanta"],["CLT","Charlotte"]];
+function depCity(code){const o=DEP_OPTS.find(x=>x[0]===code);return o?o[1]:null;}
+function airportDriveFuel(code,gas,mpg){const c=depCity(code);return c?dist(HOME,c)*2/(mpg||25)*gas:0;}
 function farthestStop(){
   if(!itin.length)return null;
   let best=null,bd=-1;
@@ -1444,22 +1450,25 @@ function farthestStop(){
 function computeFly(o){
   const fc=document.getElementById("modeCompare");if(!fc)return;
   const far=farthestStop();
+  const dep=(document.getElementById("depAirport")||{}).value||"GSP";
   const airfare=num("airfare"),carRate=num("carRate"),localMi=num("localMi");
+  const toAirport=airportDriveFuel(dep,o.gas,o.mpg);
   const rental=carRate*o.days, localGas=localMi*o.days/(o.mpg||25)*o.gas;
-  const flyTot=(airfare+rental+localGas+o.lodge+o.foodc)*(1+o.pct/100);
+  const flyTot=(airfare+toAirport+rental+localGas+o.lodge+o.foodc)*(1+o.pct/100);
   const win=airfare>0?(flyTot<o.driveTot?'fly':'drive'):'';
   const delta=Math.abs(o.driveTot-flyTot);
-  const dest=far?`${HOME_AIRPORT}→${far.airport||'?'} · ${far.city}${far.airport?'':' (no airport)'}`:'';
+  const dest=far?`${dep}→${far.airport||'?'} · ${far.city}${far.airport?'':' (no airport)'}`:'';
+  const toBk=toAirport>0?` · drive to ${dep} ${money(toAirport)}`:'';
   fc.innerHTML=
     `<div class="mc-head">Drive vs Fly${dest?` <small>fly ${dest}</small>`:''}</div>`
    +`<div class="mc-grid">`
    +`<div class="mc-card${win==='drive'?' win':''}"><div class="mc-mode">🚗 Drive</div><div class="mc-tot">${money(o.driveTot)}</div>`
      +`<div class="mc-bk">fuel ${money(o.fuel)} · lodging ${money(o.lodge)} · food ${money(o.foodc)} · +${o.pct}%</div></div>`
    +`<div class="mc-card${win==='fly'?' win':''}"><div class="mc-mode">✈️ Fly</div><div class="mc-tot">${airfare>0?money(flyTot):'—'}</div>`
-     +`<div class="mc-bk">airfare ${airfare>0?money(airfare):'(enter)'} · rental ${money(rental)} (${o.days}d×${money(carRate)}) · local gas ${money(localGas)} · lodging ${money(o.lodge)} · food ${money(o.foodc)} · +${o.pct}%</div></div>`
+     +`<div class="mc-bk">airfare ${airfare>0?money(airfare):'(enter)'}${toBk} · rental ${money(rental)} (${o.days}d×${money(carRate)}) · local gas ${money(localGas)} · lodging ${money(o.lodge)} · food ${money(o.foodc)} · +${o.pct}%</div></div>`
    +`</div>`
    +(airfare>0?`<div class="mc-verdict">${win==='fly'?'✈️ Flying':'🚗 Driving'} is cheaper by <b>${money(delta)}</b></div>`
-              :`<div class="mc-verdict muted">Enter a round-trip airfare above (or ✈️ Fetch live) to compare total cost.</div>`);
+              :`<div class="mc-verdict muted">Pick a departure airport &amp; enter airfare — or ✈️ Fetch cheapest (checks GSP, ATL &amp; CLT).</div>`);
 }
 async function fetchAirfare(){
   const note=document.getElementById("fareNote");
@@ -1472,17 +1481,34 @@ async function fetchAirfare(){
   const p=sv.split("-").map(Number);const start=new Date(p[0],p[1]-1,p[2]);
   const ret=new Date(start);ret.setDate(ret.getDate()+Math.max(1,totalNights));
   const adults=Math.max(1,Math.round(num("adults"))),kids=Math.max(0,Math.round(num("kids")));
-  note.textContent="Searching fares…";
+  const gas=num("gas"),mpg=num("mpg")||25;
+  note.textContent="Searching GSP, ATL & CLT…";
   try{
-    const q=`/api/flights?from=${HOME_AIRPORT}&to=${far.airport}&depart=${sv}&return=${isoDate(ret)}&adults=${adults}&children=${kids}`;
-    const r=await fetch(q);const d=await r.json();
-    if(d&&d.error){note.textContent="Fare lookup failed — enter airfare manually.";return;}
-    const cash=d&&d.bestCash&&d.bestCash.effectiveUsd;
-    if(cash){document.getElementById("airfare").value=Math.round(cash);
-      note.textContent=`${HOME_AIRPORT}→${far.airport} · ${adults+kids} travelers`;computeTrip();}
-    else if(d&&d.sources&&d.sources.serpapi&&d.sources.serpapi.configured===false&&d.sources.kiwi&&d.sources.kiwi.configured===false){
-      note.textContent="Live fares need SERPAPI_KEY (or KIWI_API_KEY) in Vercel — enter airfare manually.";}
-    else{note.textContent="No fares found — enter airfare manually.";}
+    const results=await Promise.all(DEP_OPTS.map(async([code])=>{
+      try{
+        const q=`/api/flights?from=${code}&to=${far.airport}&depart=${sv}&return=${isoDate(ret)}&adults=${adults}&children=${kids}`;
+        const r=await fetch(q);const d=await r.json();
+        const cash=d&&d.bestCash&&d.bestCash.effectiveUsd;
+        return {code,cash:(typeof cash==="number"?cash:null),d};
+      }catch(_){return {code,cash:null};}
+    }));
+    const priced=results.filter(x=>x.cash!=null);
+    if(!priced.length){
+      const d0=(results[0]||{}).d;
+      if(d0&&d0.sources&&d0.sources.serpapi&&d0.sources.serpapi.configured===false&&d0.sources.kiwi&&d0.sources.kiwi.configured===false)
+        note.textContent="Live fares need SERPAPI_KEY (or KIWI_API_KEY) in Vercel — enter airfare manually.";
+      else note.textContent="No fares found — enter airfare manually.";
+      return;
+    }
+    // pick the airport with lowest NET cost: fare + round-trip drive to that airport
+    priced.forEach(x=>{x.net=x.cash+airportDriveFuel(x.code,gas,mpg);});
+    priced.sort((a,b)=>a.net-b.net);
+    const best=priced[0];
+    document.getElementById("depAirport").value=best.code;
+    document.getElementById("airfare").value=Math.round(best.cash);
+    const others=priced.slice(1).map(x=>`${x.code} ${money(x.cash)}`).join(" · ");
+    note.textContent=`Cheapest net: ${best.code} ${money(best.cash)}${airportDriveFuel(best.code,gas,mpg)>0?" +drive":""} for ${adults+kids}${others?` · vs ${others}`:""}`;
+    computeTrip();
   }catch(e){note.textContent="Fare lookup error — enter airfare manually.";}
 }
 // ---- trip event calendar ----
@@ -1607,6 +1633,7 @@ document.getElementById("tripStart").addEventListener("input",renderTripEvents);
   document.getElementById(id).addEventListener("input",recompute));
 ["carRate","localMi","adults","kids","airfare"].forEach(id=>
   document.getElementById(id).addEventListener("input",computeTrip));
+document.getElementById("depAirport").addEventListener("change",computeTrip);
 document.getElementById("fetchFare").addEventListener("click",fetchAirfare);
 
 document.getElementById("recommendBtn").addEventListener("click",()=>{
