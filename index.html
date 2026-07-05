@@ -372,6 +372,31 @@
     </div>
     <div class="builder">
       <div class="builder-head">Trip Builder — chain stops into one estimate</div>
+      <style>
+        .tf-controls{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:flex-end;margin-bottom:8px}
+        .tf-hint{font-size:12px;color:var(--muted);font-style:italic;margin:0 0 12px;max-width:60ch}
+        #tfResults{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+        .tf-card{border:1px solid var(--border);border-radius:12px;padding:14px 15px;background:var(--card);
+          box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+        .tf-top{font-weight:700;font-size:15px;line-height:1.25;text-wrap:balance}
+        .tf-meta{font-size:12px;color:var(--muted);line-height:1.4}
+        .tf-cost{font-size:12px;color:var(--muted);line-height:1.45}
+        .tf-tot{font-weight:700;font-size:15px}
+        .tf-tot b{color:var(--amber-deep);font-family:var(--mono);font-variant-numeric:tabular-nums}
+        .tf-head{font-size:12.5px;color:#2e9e5b;font-weight:600}
+        .tf-empty{color:var(--muted);font-size:13.5px;font-style:italic;padding:6px 0}
+        .tf-card .qrbtn{margin-top:4px;align-self:flex-start}
+        @media(max-width:560px){#tfResults{grid-template-columns:1fr}}
+      </style>
+      <div class="tripfinder" id="tripFinder">
+        <div class="tf-controls">
+          <div class="assume"><label>Budget $</label><div class="ip"><span>$</span><input id="tfBudget" type="number" step="100" min="0" value="2000"></div></div>
+          <div class="assume"><label>Trip nights</label><div class="ip"><input id="tfNights" type="number" step="1" min="1" value="4"></div></div>
+          <button class="qrbtn solid" id="tfGo">Find trips that fit</button>
+        </div>
+        <p class="tf-hint">Uses the assumptions above (gas, food, hotel, buffer) to cost each option, then shows the leftover budget as an attractions &amp; meals cushion.</p>
+        <div id="tfResults"></div>
+      </div>
       <div class="quickroutes" id="quickroutes"></div>
       <select id="addStop" aria-label="Add a stop to your trip"></select>
       <div class="builder-actions">
@@ -1430,6 +1455,54 @@ function computeTrip(){
   computeFly({fuel,lodge,foodc,pct,days,driveTot:tot,gas,mpg});
   renderTripEvents();
 }
+// ---- trip finder ----
+// Generates candidate itineraries (each single destination + each preset), costs
+// every one with the SAME model as computeTrip, keeps those within budget, and
+// ranks them by number of stops (more to see) then by cost (cheaper first).
+let tfCandidates=[];
+function findTrips(){
+  const budget=num("tfBudget");
+  const N=Math.max(1,Math.round(num("tfNights")));
+  const gas=num("gas"),mpg=num("mpg")||25,food=num("food"),pct=num("buffer");
+  const routes=Object.keys(CITIES).map(c=>[c]).concat(Object.values(PRESETS));
+  const kept=[];
+  routes.forEach(route=>{
+    const stops=route.length;
+    if(stops>N)return;
+    const base=Math.floor(N/stops), rem=N%stops;
+    const nightsArr=route.map((_,i)=>base+(i<rem?1:0));
+    const seq=[HOME,...route,HOME];
+    let miles=0;for(let i=1;i<seq.length;i++)miles+=dist(seq[i-1],seq[i]);
+    const fuel=miles/mpg*gas;
+    const lodge=route.reduce((s,c,i)=>s+hotelRate(c)*nightsArr[i],0);
+    const days=N+1, foodc=food*days;
+    const sub=fuel+lodge+foodc, buf=sub*pct/100, tot=sub+buf;
+    if(tot<=budget)kept.push({route,nightsArr,N,miles,fuel,lodge,foodc,tot,headroom:budget-tot,stops});
+  });
+  kept.sort((a,b)=> b.stops-a.stops || a.tot-b.tot);
+  tfCandidates=kept.slice(0,8);
+  renderTfResults(pct);
+}
+function renderTfResults(pct){
+  const box=document.getElementById("tfResults");if(!box)return;
+  if(!tfCandidates.length){
+    box.innerHTML=`<div class="tf-empty">No trips fit that budget with those assumptions. Try raising the budget, adding more nights, or planning fewer stops.</div>`;
+    return;
+  }
+  box.innerHTML=tfCandidates.map((c,idx)=>{
+    const nper=c.nightsArr.join("+")+" night"+(c.N===1&&c.stops===1?"":"s");
+    return `<div class="tf-card">`
+      +`<div class="tf-top">${c.route.join(" → ")}</div>`
+      +`<div class="tf-meta">Greenville → ${c.route.join(" → ")} → Greenville</div>`
+      +`<div class="tf-meta">${nper} · ${c.N} night${c.N===1?"":"s"} · ${c.stops} stop${c.stops>1?"s":""} · ~${Math.round(c.miles).toLocaleString()} mi round trip</div>`
+      +`<div class="tf-cost">drive ${money(c.fuel)} · lodging ${money(c.lodge)} · food ${money(c.foodc)} · +${pct}%</div>`
+      +`<div class="tf-tot">Total <b>${money(c.tot)}</b></div>`
+      +`<div class="tf-head">≈ ${money(c.headroom)} left for attractions &amp; meals</div>`
+      +`<button class="qrbtn" data-tf="${idx}">Load into planner</button>`
+      +`</div>`;
+  }).join("");
+}
+
 // ---- drive vs fly comparison ----
 // Fly total swaps road fuel for: airfare (whole party) + a rental car (rate × trip
 // days) + local gas at the destination, keeping lodging/food/buffer the same so the
@@ -1645,6 +1718,16 @@ document.getElementById("recommendBtn").addEventListener("click",()=>{
     :`Already the shortest loop — about <b>${Math.round(after).toLocaleString()} mi</b>.`);
 });
 document.getElementById("clearTrip").addEventListener("click",()=>{itin=[];renderItin();});
+
+document.getElementById("tfGo").addEventListener("click",findTrips);
+document.getElementById("tfResults").addEventListener("click",e=>{
+  const btn=e.target.closest("[data-tf]");if(!btn)return;
+  const cand=tfCandidates[+btn.dataset.tf];if(!cand)return;
+  itin=cand.route.map((c,i)=>({city:c,nights:cand.nightsArr[i]}));
+  renderItin();
+  const target=document.getElementById("tripSummary")||document.getElementById("itinerary");
+  if(target)target.scrollIntoView({behavior:"smooth",block:"start"});
+});
 
 let PLAYBOOKS=[
   {"city":"Atlanta","pitch":"Your closest big-city hit: a top-5 world aquarium, a gorilla-packed zoo, and the world's largest dinosaur all inside two hours of the driveway.","perfectDay":[{"when":"Morning","stop":"Georgia Aquarium","note":"Rope-drop it — whale sharks and belugas first while both girls are fresh; buy timed tickets in advance."},{"when":"Midday","stop":"World of Coca-Cola","note":"Right next door in Pemberton Place — the Scent Discovery and mix-your-own tasting room is a quick, low-energy pairing after the aquarium."},{"when":"Afternoon","stop":"Zoo Atlanta","note":"Save the big gorilla troop and pandas for after a car-ride reset; walkable and shaded."},{"when":"Evening","stop":"BeltLine: Ponce City + Krog St Markets","note":"Flat stroller path plus food halls — let the 9-yo pick ramen, the 5-yo gets Jeni's, everyone unwinds."}],"signature":"Georgia Aquarium","rainyDay":"Fernbank Museum","foodStop":"The food stalls inside Ponce City Market's Central Food Hall — something for every picky palate under one roof.","kidTip":"Do the aquarium at opening before the school-group crush, then use the midday Coca-Cola stop as an air-conditioned buffer so the 5-yo can recharge before the zoo's afternoon walking.","stayArea":"Midtown — walkable to the aquarium/Coke, near the BeltLine, easy highway access to the zoo."},
