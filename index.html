@@ -79,7 +79,7 @@
   .k.pass{border:1.5px dashed var(--border)}
 
   /* ---------- filter bar ---------- */
-  .toolbar{position:sticky;top:0;z-index:20;background:rgba(234,237,228,.92);
+  .toolbar{position:sticky;top:44px;z-index:20;background:rgba(234,237,228,.92);
     backdrop-filter:blur(8px);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
     padding:14px 0}
   .toolbar .wrap{display:flex;flex-direction:column;gap:12px}
@@ -103,7 +103,7 @@
     text-decoration:underline;font-family:var(--sans)}
 
   /* ---------- library ---------- */
-  .city-block{margin-top:34px;scroll-margin-top:120px}
+  .city-block{margin-top:34px;scroll-margin-top:140px}
   .city-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px;
     padding-bottom:10px;border-bottom:2px solid var(--pine);margin-bottom:16px}
   .city-head h3{font-family:var(--serif);font-size:23px;font-weight:600;margin:0;letter-spacing:-.01em}
@@ -320,6 +320,58 @@
     .stats{gap:18px}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ---------- site nav ---------- */
+  .site-nav{background:var(--pine);border-bottom:2px solid rgba(255,255,255,.1);
+    position:sticky;top:0;z-index:30}
+  .nav-wrap{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav-wrap::-webkit-scrollbar{display:none}
+  .nav-link{display:flex;align-items:center;gap:6px;padding:11px 16px;color:rgba(255,255,255,.65);
+    text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;letter-spacing:.01em;
+    border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
+  .nav-link svg{width:14px;height:14px;flex:none}
+  .nav-link:hover{color:#fff;background:rgba(255,255,255,.06)}
+  .nav-link.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+  /* ---------- planner sub-panels ---------- */
+  .sp{margin-bottom:32px}
+  .sp-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--amber-deep);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;
+    padding-bottom:9px;border-bottom:2px solid var(--border)}
+  .sp-title svg{width:13px;height:13px;flex:none;opacity:.8}
+
+  /* ---------- trip finder (moved from inline) ---------- */
+  .tf-controls{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:flex-end;margin-bottom:8px}
+  .tf-hint{font-size:12px;color:var(--muted);font-style:italic;margin:0 0 12px;max-width:60ch}
+  #tfResults{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  .tf-card{border:1px solid var(--border);border-radius:12px;padding:14px 15px;background:var(--card);
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+  .tf-top{font-weight:700;font-size:15px;line-height:1.25;text-wrap:balance}
+  .tf-meta{font-size:12px;color:var(--muted);line-height:1.4}
+  .tf-cost{font-size:12px;color:var(--muted);line-height:1.45}
+  .tf-tot{font-weight:700;font-size:15px}
+  .tf-tot b{color:var(--amber-deep);font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .tf-head{font-size:12.5px;color:#2e9e5b;font-weight:600}
+  .tf-empty{color:var(--muted);font-size:13.5px;font-style:italic;padding:6px 0}
+  .tf-card .qrbtn{margin-top:4px;align-self:flex-start}
+  @media(max-width:560px){#tfResults{grid-template-columns:1fr}}
+
+  /* ---------- drive vs fly (moved from inline) ---------- */
+  .flycompare{margin-top:2px}
+  .fly-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+  .fly-controls label{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600}
+  .fly-controls .ip{max-width:130px}
+  .mc-head{font-weight:700;margin-bottom:8px;font-size:14px;color:var(--pine)}
+  .mc-head small{font-weight:500;opacity:.7;font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+  .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mc-card{border:1px solid rgba(128,128,128,.3);border-radius:10px;padding:12px}
+  .mc-card.win{border-color:#2e9e5b;box-shadow:0 0 0 1px #2e9e5b inset;background:#f4faf5}
+  .mc-mode{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;opacity:.75;font-weight:600}
+  .mc-tot{font-size:1.4rem;font-weight:800;margin:2px 0;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+  .mc-bk{font-size:.78rem;opacity:.7;line-height:1.45}
+  .mc-verdict{margin-top:10px;font-size:.95rem;font-weight:600}
+  .mc-verdict.muted{opacity:.6;font-weight:500}
+  @media(max-width:560px){.mc-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -329,15 +381,35 @@
   <div class="wrap">
     <p class="eyebrow">Family Adventure Portfolio · Est. Greenville, SC</p>
     <h1>The Hensel Family Adventure Atlas</h1>
-    <p class="sub">A living field guide to the quarterly-adventure portfolio — every destination a playbook, every long drive broken into a chain of discoveries. Built for two girls (K &amp; 4th grade) who love water, animals, hands-on wonder, and the roads less taken.</p>
+    <p class="sub">A living field guide to the quarterly-adventure portfolio — every destination a playbook, every long drive broken into a chain of discoveries. Built for two girls (K &amp; 4th grade) who love water, animals, hands-on wonder, and the roads less taken. Powered by a live database with flight cost comparison and budget-to-trip matching.</p>
     <div class="stats">
-      <div class="stat"><b>23</b><span>Cities scouted</span></div>
+      <div class="stat"><b id="cityCount">23</b><span>Cities scouted</span></div>
       <div class="stat"><b id="totCount">0</b><span>Attractions logged</span></div>
-      <div class="stat"><b>5</b><span>Travel corridors</span></div>
-      <div class="stat"><b>8</b><span>Experience themes</span></div>
+      <div class="stat"><b id="corridorCount">5</b><span>Travel corridors</span></div>
+      <div class="stat"><b id="themeCount">8</b><span>Experience themes</span></div>
     </div>
   </div>
 </header>
+
+<nav class="site-nav" aria-label="Site navigation">
+  <div class="wrap nav-wrap">
+    <a class="nav-link" href="#network">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7l-7 10"/><path d="M12 7l7 10"/><path d="M6 19h12"/></svg>
+      Corridors</a>
+    <a class="nav-link" href="#budget">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Trip Planner</a>
+    <a class="nav-link" href="#library">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Attractions</a>
+    <a class="nav-link" href="#playbooks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Playbooks</a>
+    <a class="nav-link" href="#strategy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Strategy</a>
+  </div>
+</nav>
 
 <section id="network">
   <div class="wrap">
@@ -355,39 +427,36 @@
 
 <section id="budget">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">02</span><h2>Trip Budget</h2></div>
-    <p class="sec-desc">Set your assumptions once and the whole atlas re-prices. Each city shows a <b>base leg</b> (round-trip fuel + lodging + food); the builder below chains stops into a full trip total. Attractions layer on top — refresh a city's prices to fill those in.</p>
-    <div class="assumptions">
-      <div class="assume"><label>Gas / gal</label><div class="ip"><span>$</span><input id="gas" type="number" step="0.05" min="0" value="3.15"></div></div>
-      <div class="assume"><label>Miles / gal</label><div class="ip"><input id="mpg" type="number" step="1" min="1" value="25"></div></div>
-      <div class="assume"><label>Food / day</label><div class="ip"><span>$</span><input id="food" type="number" step="5" min="0" value="90"></div></div>
-      <div class="assume"><label>Hotel / night</label><div class="ip"><span>$</span><input id="hotel" type="number" step="10" min="0" value="150"></div></div>
-      <div class="assume"><label>Nights / stop</label><div class="ip"><input id="nights" type="number" step="1" min="0" value="2"></div></div>
-      <div class="assume"><label>Buffer %</label><div class="ip"><input id="buffer" type="number" step="1" min="0" value="10"></div></div>
-      <div class="assume"><label>Car rental / day</label><div class="ip"><span>$</span><input id="carRate" type="number" step="5" min="0" value="65"></div></div>
-      <div class="assume"><label>Local mi / day</label><div class="ip"><input id="localMi" type="number" step="5" min="0" value="30"></div></div>
-      <div class="assume"><label>Adults</label><div class="ip"><input id="adults" type="number" step="1" min="1" value="2"></div></div>
-      <div class="assume"><label>Kids</label><div class="ip"><input id="kids" type="number" step="1" min="0" value="2"></div></div>
-      <p class="assume-note">Hotel is a placeholder until you refresh a city — then its real rate replaces the default. Car rental &amp; local miles feed the fly-vs-drive comparison below.</p>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Trip Planner</h2></div>
+    <p class="sec-desc">Set your assumptions once and every city re-prices automatically. Use <b>Trip Finder</b> to discover what fits a budget, <b>Trip Builder</b> to chain stops into a full itinerary, and <b>Drive vs. Fly</b> to compare modes with live fare lookup from GSP, ATL, and CLT.</p>
+
+    <!-- ── Travel Assumptions ───────────────────────────────────── -->
+    <div class="sp">
+      <div class="sp-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Travel Assumptions
+      </div>
+      <div class="assumptions">
+        <div class="assume"><label>Gas / gal</label><div class="ip"><span>$</span><input id="gas" type="number" step="0.05" min="0" value="3.15"></div></div>
+        <div class="assume"><label>Miles / gal</label><div class="ip"><input id="mpg" type="number" step="1" min="1" value="25"></div></div>
+        <div class="assume"><label>Food / day</label><div class="ip"><span>$</span><input id="food" type="number" step="5" min="0" value="90"></div></div>
+        <div class="assume"><label>Hotel / night</label><div class="ip"><span>$</span><input id="hotel" type="number" step="10" min="0" value="150"></div></div>
+        <div class="assume"><label>Nights / stop</label><div class="ip"><input id="nights" type="number" step="1" min="0" value="2"></div></div>
+        <div class="assume"><label>Buffer %</label><div class="ip"><input id="buffer" type="number" step="1" min="0" value="10"></div></div>
+        <div class="assume"><label>Car rental / day</label><div class="ip"><span>$</span><input id="carRate" type="number" step="5" min="0" value="65"></div></div>
+        <div class="assume"><label>Local mi / day</label><div class="ip"><input id="localMi" type="number" step="5" min="0" value="30"></div></div>
+        <div class="assume"><label>Adults</label><div class="ip"><input id="adults" type="number" step="1" min="1" value="2"></div></div>
+        <div class="assume"><label>Kids</label><div class="ip"><input id="kids" type="number" step="1" min="0" value="2"></div></div>
+        <p class="assume-note">Hotel is a placeholder until you refresh a city — then its real rate replaces the default. Car rental &amp; local miles feed the Drive vs. Fly comparison below.</p>
+      </div>
     </div>
-    <div class="builder">
-      <div class="builder-head">Trip Builder — chain stops into one estimate</div>
-      <style>
-        .tf-controls{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:flex-end;margin-bottom:8px}
-        .tf-hint{font-size:12px;color:var(--muted);font-style:italic;margin:0 0 12px;max-width:60ch}
-        #tfResults{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-        .tf-card{border:1px solid var(--border);border-radius:12px;padding:14px 15px;background:var(--card);
-          box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
-        .tf-top{font-weight:700;font-size:15px;line-height:1.25;text-wrap:balance}
-        .tf-meta{font-size:12px;color:var(--muted);line-height:1.4}
-        .tf-cost{font-size:12px;color:var(--muted);line-height:1.45}
-        .tf-tot{font-weight:700;font-size:15px}
-        .tf-tot b{color:var(--amber-deep);font-family:var(--mono);font-variant-numeric:tabular-nums}
-        .tf-head{font-size:12.5px;color:#2e9e5b;font-weight:600}
-        .tf-empty{color:var(--muted);font-size:13.5px;font-style:italic;padding:6px 0}
-        .tf-card .qrbtn{margin-top:4px;align-self:flex-start}
-        @media(max-width:560px){#tfResults{grid-template-columns:1fr}}
-      </style>
+
+    <!-- ── Trip Finder ──────────────────────────────────────────── -->
+    <div class="sp">
+      <div class="sp-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Trip Finder — Budget to Destination Matching
+      </div>
       <div class="tripfinder" id="tripFinder">
         <div class="tf-controls">
           <div class="assume"><label>Budget $</label><div class="ip"><span>$</span><input id="tfBudget" type="number" step="100" min="0" value="2000"></div></div>
@@ -396,6 +465,14 @@
         </div>
         <p class="tf-hint">Uses the assumptions above (gas, food, hotel, buffer) to cost each option, then shows the leftover budget as an attractions &amp; meals cushion.</p>
         <div id="tfResults"></div>
+      </div>
+    </div>
+
+    <!-- ── Trip Builder ──────────────────────────────────────────── -->
+    <div class="sp">
+      <div class="sp-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+        Trip Builder — Chain Stops Into One Estimate
       </div>
       <div class="quickroutes" id="quickroutes"></div>
       <select id="addStop" aria-label="Add a stop to your trip"></select>
@@ -409,23 +486,15 @@
       </div>
       <div class="itinerary" id="itinerary"></div>
       <div class="tripsummary" id="tripSummary"></div>
-      <style>
-        .flycompare{margin-top:14px}
-        .fly-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
-        .fly-controls label{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600}
-        .fly-controls .ip{max-width:130px}
-        .mc-head{font-weight:700;margin-bottom:8px}
-        .mc-head small{font-weight:500;opacity:.7}
-        .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-        .mc-card{border:1px solid rgba(128,128,128,.3);border-radius:10px;padding:12px}
-        .mc-card.win{border-color:#2e9e5b;box-shadow:0 0 0 1px #2e9e5b inset}
-        .mc-mode{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;opacity:.75}
-        .mc-tot{font-size:1.4rem;font-weight:800;margin:2px 0}
-        .mc-bk{font-size:.78rem;opacity:.7;line-height:1.45}
-        .mc-verdict{margin-top:10px;font-size:.95rem}
-        .mc-verdict.muted{opacity:.6;font-weight:500}
-        @media(max-width:560px){.mc-grid{grid-template-columns:1fr}}
-      </style>
+      <div class="tripevents" id="tripEvents"></div>
+    </div>
+
+    <!-- ── Drive vs. Fly ─────────────────────────────────────────── -->
+    <div class="sp">
+      <div class="sp-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2l5.8 5.8L6.2 16l3 3 3-1.4 5.8 5.8 1.2-8.2z"/></svg>
+        Drive vs. Fly — Cost Comparison
+      </div>
       <div class="flycompare" id="flyWrap">
         <div class="fly-controls">
           <label>Depart from <select id="depAirport"><option value="GSP">GSP · Greenville (home)</option><option value="ATL">ATL · Atlanta (+drive)</option><option value="CLT">CLT · Charlotte (+drive)</option></select></label>
@@ -435,7 +504,6 @@
         </div>
         <div class="modecompare" id="modeCompare"></div>
       </div>
-      <div class="tripevents" id="tripEvents"></div>
     </div>
   </div>
 </section>
@@ -1811,11 +1879,39 @@ async function hydrateFromApi(){
     if(d.PRESETS)PRESETS=d.PRESETS;
     if(d.COR)COR=d.COR;
     renderAll();
+    // update masthead stats from live data
+    const cc=document.getElementById('cityCount');
+    if(cc)cc.textContent=Object.keys(CITIES).filter(k=>!CITIES[k].isHome).length||23;
+    const tc=document.getElementById('themeCount');
+    if(tc)tc.textContent=Object.keys(THEMES).length||8;
+    const corc=document.getElementById('corridorCount');
+    if(corc&&COR)corc.textContent=COR.length||5;
   }catch(e){/* keep baked-in data */}
 }
 
 renderAll();
 hydrateFromApi();
+
+// ---- nav active-state via IntersectionObserver ----
+(function(){
+  const links=document.querySelectorAll('.nav-link');
+  const ids=['network','budget','library','playbooks','strategy'];
+  const map={};ids.forEach(id=>{const a=document.querySelector(`.nav-link[href="#${id}"]`);if(a)map[id]=a;});
+  let active=null;
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting&&e.intersectionRatio>=0.1){
+        const id=e.target.id;
+        if(active)active.classList.remove('active');
+        active=map[id];
+        if(active)active.classList.add('active');
+      }
+    });
+  },{rootMargin:'-44px 0px -60% 0px',threshold:0.1});
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el);});
+  // highlight the first link initially
+  if(map['network'])map['network'].classList.add('active');
+})();
 </script>
 
 </body>
