@@ -372,6 +372,46 @@
   .mc-verdict{margin-top:10px;font-size:.95rem;font-weight:600}
   .mc-verdict.muted{opacity:.6;font-weight:500}
   @media(max-width:560px){.mc-grid{grid-template-columns:1fr}}
+
+  /* ---------- international finder ---------- */
+  .intl-hdr{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end;
+    background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:14px 18px;box-shadow:var(--shadow);margin-bottom:12px}
+  .intl-hdr select,.intl-hdr input[type=date]{border:1.5px solid var(--border);
+    border-radius:8px;padding:7px 10px;font-size:13px;font-family:var(--sans);
+    background:var(--paper);color:var(--ink)}
+  .intl-hdr input[type=date]{padding:6px 10px}
+  .intl-filter-bar{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;
+    margin-bottom:18px}
+  .intl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .intl-card{border:1px solid var(--border);border-radius:14px;padding:16px 17px;
+    background:var(--card);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px}
+  .intl-card.dim{display:none}
+  .intl-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .intl-dest{font-family:var(--serif);font-size:17px;font-weight:600;line-height:1.2;
+    text-wrap:balance;margin:0}
+  .intl-sub{font-size:12px;color:var(--muted);line-height:1.4;margin-top:2px}
+  .intl-fbadge{font-family:var(--mono);font-size:10px;letter-spacing:.06em;font-weight:600;
+    padding:3px 9px;border-radius:100px;white-space:nowrap;flex:none}
+  .intl-fbadge.s{background:#E4F0E6;color:#2C6B3C}
+  .intl-fbadge.m{background:#FBF3E2;color:var(--amber-deep)}
+  .intl-fbadge.l{background:#F0ECF8;color:#5A3AAF}
+  .intl-hl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+  .intl-hl li{font-size:13px;line-height:1.4;padding-left:15px;position:relative;color:#33443c}
+  .intl-hl li::before{content:"◆";position:absolute;left:0;top:1px;color:var(--amber);font-size:9px}
+  .intl-season{font-size:11.5px;color:var(--muted);font-style:italic;
+    border-top:1px dashed var(--border);padding-top:7px;line-height:1.4}
+  .intl-season b{font-style:normal;color:var(--amber-deep);font-family:var(--mono);
+    font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;margin-right:4px}
+  .intl-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+    margin-top:auto;padding-top:8px;border-top:1px solid var(--border)}
+  .intl-est{font-size:12px;color:var(--muted);font-family:var(--mono);flex:1;
+    font-variant-numeric:tabular-nums}
+  .intl-est b{color:var(--pine);font-weight:700}
+  .intl-live{font-size:12.5px;width:100%;min-height:1px;color:#33443c}
+  .intl-live b{font-family:var(--mono);font-weight:700;color:var(--amber-deep)}
+  .intl-visa{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;
+    color:#2C6B3C;background:#E4F0E6;border-radius:100px;padding:2px 7px;margin-left:auto}
 </style>
 </head>
 <body>
@@ -408,6 +448,9 @@
     <a class="nav-link" href="#strategy">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       Strategy</a>
+    <a class="nav-link" href="#intl">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      International</a>
   </div>
 </nav>
 
@@ -505,6 +548,46 @@
         <div class="modecompare" id="modeCompare"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="intl">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">INT'L</span><h2>International Destinations</h2></div>
+    <p class="sec-desc">Fourteen destinations beyond the drive-it corridor — curated for two adventure-loving girls (ages 5 &amp; 9). Filter by budget, flight time, or theme. Set travel dates below and hit <b>✈ Fetch fare</b> on any card to pull a live price from the flight engine.</p>
+
+    <div class="intl-hdr">
+      <div class="assume"><label>Depart from</label>
+        <select id="intlDep">
+          <option value="GSP">GSP · Greenville</option>
+          <option value="ATL" selected>ATL · Atlanta</option>
+          <option value="CLT">CLT · Charlotte</option>
+        </select>
+      </div>
+      <div class="assume"><label>Outbound date</label>
+        <input type="date" id="intlDepart">
+      </div>
+      <div class="assume"><label>Return date</label>
+        <input type="date" id="intlReturn">
+      </div>
+      <p class="assume-note" style="margin:0;align-self:flex-end">Adults &amp; kids from Travel Assumptions. Flight times are from ATL.</p>
+    </div>
+
+    <div class="intl-filter-bar">
+      <div class="assume"><label>Max airfare (family RT)</label>
+        <div class="ip"><span>$</span><input id="intlBudget" type="number" step="500" min="0" value="5000"></div>
+      </div>
+      <button class="chip" data-intl-dur="short" aria-pressed="false">Short (&lt;5h)</button>
+      <button class="chip" data-intl-dur="medium" aria-pressed="false">Medium (5–9h)</button>
+      <button class="chip" data-intl-dur="long" aria-pressed="false">Long (9h+)</button>
+      <span id="intlThemeChips" style="display:contents"></span>
+      <input class="search" id="intlSearch" type="search" placeholder="Search destinations…" style="min-width:130px;flex:1;max-width:240px">
+      <span class="count" id="intlCount"></span>
+      <button class="reset" id="intlReset">Clear all</button>
+    </div>
+
+    <div class="intl-grid" id="intlGrid"></div>
+    <div class="empty" id="intlEmpty">No destinations match. <button class="reset" id="intlReset2">Clear filters</button></div>
   </div>
 </section>
 
@@ -1843,6 +1926,269 @@ function renderPlaybooks(){
   }).join('');
 }
 
+// ---- international destination finder ----
+const INTL=[
+  {id:"cancun",name:"Cancun & Riviera Maya",country:"Mexico",flag:"🇲🇽",region:"Caribbean Mexico",
+   airport:"CUN",flightH:3.5,themes:["wa","na","hi"],tier:"SIG",
+   highlights:[
+     "Swim in freshwater cenotes — turquoise limestone sinkholes 30 min from the beach",
+     "Xcaret eco-park: manatees, sea turtles, a river swim-through, and a Mayan village",
+     "Chichén Itzá day trip — one of the New Seven Wonders of the World"
+   ],
+   ages:"both",season:"Nov–Apr (dry; avoid peak summer heat)",
+   estAirfare:[600,1600],notes:"All-inclusive resorts keep nightly costs predictable. Most water activities 5+.",visaFree:true},
+  {id:"puertorico",name:"Puerto Rico",country:"United States",flag:"🇵🇷",region:"Caribbean — no passport!",
+   airport:"SJU",flightH:3.5,themes:["wa","hi","na","fo"],tier:"SIG",
+   highlights:[
+     "El Yunque — the only US National Rainforest, with waterfall hikes both girls can do",
+     "Old San Juan: 500-year-old colorful streets and climbable sea forts (free to enter)",
+     "Kayak a bioluminescent bay at night — water glows neon green (age 5+)"
+   ],
+   ages:"both",season:"Dec–Apr (dry; avoid Sept–Oct hurricane risk)",
+   estAirfare:[500,1400],notes:"No passport required for US citizens — a great first international trip.",visaFree:true},
+  {id:"bahamas",name:"The Bahamas",country:"Bahamas",flag:"🇧🇸",region:"Caribbean",
+   airport:"NAS",flightH:2.5,themes:["wa","an","na"],tier:"SIG",
+   highlights:[
+     "Exuma's swimming pigs: the world-famous pig beach reached by a day-trip boat",
+     "Atlantis waterpark & marine habitat on Nassau — day-visitor tickets available",
+     "Snorkel with nurse sharks and stingrays in calm, gin-clear Bahamian water"
+   ],
+   ages:"both",season:"Dec–Apr (peak dry; prices higher Feb–Mar)",
+   estAirfare:[800,2000],notes:"Nassau is the easiest entry hub; Exuma for island-hopping adventure.",visaFree:true},
+  {id:"jamaica",name:"Jamaica",country:"Jamaica",flag:"🇯🇲",region:"Caribbean",
+   airport:"MBJ",flightH:3.5,themes:["wa","na","fo"],tier:"SIG",
+   highlights:[
+     "Dunn's River Falls: climb a 600-ft natural limestone cascade hand-in-hand to the top",
+     "Dolphin Cove near Ocho Rios: swim with dolphins in a protected cove",
+     "Doctor's Cave Beach: crystal-clear calm water and great snorkeling from shore"
+   ],
+   ages:"both",season:"Dec–Apr (dry; avoid Aug–Oct hurricane risk)",
+   estAirfare:[700,1800],notes:"Montego Bay all-inclusives are family-focused with meals and activities included.",visaFree:true},
+  {id:"aruba",name:"Aruba",country:"Aruba",flag:"🇦🇼",region:"Southern Caribbean",
+   airport:"AUA",flightH:4.5,themes:["wa","na"],tier:"SIG",
+   highlights:[
+     "Eagle Beach: calm, shallow water — one of the Caribbean's best beaches for small kids",
+     "Baby Beach: a fully protected lagoon with wading depth perfect for a 5-year-old",
+     "Arikok National Park: iguanas, cave petroglyphs, and natural tide pools in the desert"
+   ],
+   ages:"both",season:"Year-round (outside the hurricane belt; May–Aug quieter & cheaper)",
+   estAirfare:[900,2100],notes:"Almost no rain, constant trade winds. One of the most reliably sunny islands.",visaFree:true},
+  {id:"costarica",name:"Costa Rica",country:"Costa Rica",flag:"🇨🇷",region:"Central America",
+   airport:"SJO",flightH:5,themes:["na","an","wa"],tier:"SIG",
+   highlights:[
+     "Manuel Antonio National Park: capuchin monkeys walk the beach right beside you",
+     "Arenal Volcano hot springs & canopy zip-lines over the rainforest",
+     "Sea turtle nesting watch at Tortuguero (Oct–Feb) — a rare conservation experience"
+   ],
+   ages:"both",season:"Dec–Apr (dry season on the Pacific side)",
+   estAirfare:[900,2200],notes:"Rent a 4WD for flexibility. Zip-line minimums usually 5+.",visaFree:true},
+  {id:"belize",name:"Belize",country:"Belize",flag:"🇧🇿",region:"Central America",
+   airport:"BZE",flightH:4.5,themes:["wa","na","hi","an"],tier:"GEM",
+   highlights:[
+     "Cave tubing through ancient Mayan ceremonial caves — floating in headlamps (age 5+)",
+     "Hol Chan Marine Reserve: snorkel the world's second-largest barrier reef with nurse sharks",
+     "Cockscomb Wildlife Sanctuary: tapirs, jaguars, and spider monkeys in jaguar country"
+   ],
+   ages:"both",season:"Feb–May (driest; warmest water for reef snorkeling)",
+   estAirfare:[1000,2400],notes:"Caye Caulker is budget-friendly and mellow; Ambergris Caye is more resort-style.",visaFree:true},
+  {id:"toronto",name:"Toronto & Niagara Falls",country:"Canada",flag:"🇨🇦",region:"Canada",
+   airport:"YYZ",flightH:2,themes:["na","sc","wk","an"],tier:"SIG",
+   highlights:[
+     "Niagara Falls + Hornblower boat into the mist — one of Earth's most powerful waterfalls (90 min away)",
+     "Royal Ontario Museum: 6 million objects, dinosaur gallery, and hands-on kids' sections",
+     "Toronto Zoo: 5,000 animals, 700+ species — one of North America's best"
+   ],
+   ages:"both",season:"May–Oct (Niagara boat Apr–Nov; July Caribana festival)",
+   estAirfare:[500,1400],notes:"No language barrier, familiar food, easy transit — a great starter international trip.",visaFree:false},
+  {id:"iceland",name:"Iceland",country:"Iceland",flag:"🇮🇸",region:"North Atlantic",
+   airport:"KEF",flightH:8,themes:["na","wa","sc"],tier:"SIG",
+   highlights:[
+     "Golden Circle: Geysir erupts every few minutes; Gullfoss waterfall; walkable lava fields",
+     "Whale watching from Húsavík (June–Aug) — minke, humpback, and blue whales spotted regularly",
+     "Blue Lagoon: milky-blue geothermal spa set in a lava field — otherworldly for kids"
+   ],
+   ages:"older",season:"June–Aug (midnight sun, puffins, whale watching); Dec–Feb (Northern Lights)",
+   estAirfare:[2000,5000],notes:"Summer has 22+ hours of daylight. Camper van + Ring Road is the family sweet spot.",visaFree:true},
+  {id:"ireland",name:"Ireland",country:"Ireland",flag:"🇮🇪",region:"Western Europe",
+   airport:"DUB",flightH:8,themes:["hi","na","wk"],tier:"GEM",
+   highlights:[
+     "Cliffs of Moher: 700-ft vertical cliffs rising from the wild Atlantic — genuinely awe-inspiring",
+     "Bunratty Castle medieval banquet & Folk Park: jousting, costumes, and living history",
+     "Dublin's EPIC Irish Emigration Museum: interactive and story-driven, ideal for the 9-year-old"
+   ],
+   ages:"both",season:"May–Sept (driest; long summer evenings; wildflower season)",
+   estAirfare:[3000,7000],notes:"Rent a car to explore the Ring of Kerry and Wild Atlantic Way at your own pace.",visaFree:true},
+  {id:"london",name:"London, England",country:"United Kingdom",flag:"🇬🇧",region:"Western Europe",
+   airport:"LHR",flightH:9,themes:["hi","wk","sc","an"],tier:"SIG",
+   highlights:[
+     "Harry Potter Studio Tour in Leavesden: the real sets, costumes, and Hogwarts model (pre-book!)",
+     "Natural History Museum: free, and the dinosaur gallery alone is worth the flight",
+     "Tower of London + Thames River cruise + Changing of the Guard — three classics, one morning"
+   ],
+   ages:"both",season:"Apr–Jun & Sept–Oct (fewer crowds, milder temperatures)",
+   estAirfare:[3000,7000],notes:"Book HP Studio Tour 3+ months ahead. Oyster card covers all transit.",visaFree:true},
+  {id:"lisbon",name:"Lisbon & Sintra, Portugal",country:"Portugal",flag:"🇵🇹",region:"Southern Europe",
+   airport:"LIS",flightH:8.5,themes:["hi","wk","fo","na"],tier:"GEM",
+   highlights:[
+     "Sintra's Palácio da Pena: a Disney-esque hilltop palace in every color — genuinely magical",
+     "Alfama tram 28: the world's most scenic yellow tram through the oldest neighborhood in Europe",
+     "Cascais beach town: calm Atlantic beaches 40 min from Lisbon by train"
+   ],
+   ages:"both",season:"Apr–Jun & Sept–Oct (warm, uncrowded; far cheaper than Paris or London)",
+   estAirfare:[2500,6000],notes:"Most affordable major European capital. Hotel prices well below Paris or London.",visaFree:true},
+  {id:"paris",name:"Paris, France",country:"France",flag:"🇫🇷",region:"Western Europe",
+   airport:"CDG",flightH:9.5,themes:["hi","wk","fo","tp"],tier:"SIG",
+   highlights:[
+     "Eiffel Tower at dusk — kids love the hourly light show that sparks up after dark",
+     "Disneyland Paris via RER A (45 min from city center): smaller, less crowded, same magic",
+     "Musée d'Orsay: Impressionist masterpieces in a stunning old railway station"
+   ],
+   ages:"both",season:"Apr–Jun & Sept (shoulder season; July 14 Bastille Day fireworks are spectacular)",
+   estAirfare:[3500,8000],notes:"RER B train from CDG airport goes directly to the city center.",visaFree:true},
+  {id:"amsterdam",name:"Amsterdam, Netherlands",country:"Netherlands",flag:"🇳🇱",region:"Western Europe",
+   airport:"AMS",flightH:9.5,themes:["hi","wk","sc"],tier:"GEM",
+   highlights:[
+     "NEMO Science Museum: 5 floors of hands-on experiments — the best science museum in Europe",
+     "Canal boat tour: families love spotting houseboats and cyclists from the water",
+     "Keukenhof tulip gardens (Mar–May only): 7 million flowers across 80 acres"
+   ],
+   ages:"both",season:"Apr–May (tulips, manageable crowds); Jun–Aug (festivals, warmest weather)",
+   estAirfare:[3000,7000],notes:"AMS is a major hub — often the cheapest European entry point from ATL.",visaFree:true}
+];
+
+let intlFilter={dur:null,themes:new Set(),budget:5000,search:''};
+let intlFares={};
+
+function intlFlightClass(h){return h<5?'s':h<9?'m':'l';}
+
+function renderIntl(){
+  const grid=document.getElementById('intlGrid');
+  const empty=document.getElementById('intlEmpty');
+  if(!grid)return;
+  const bud=+document.getElementById('intlBudget')?.value||Infinity;
+  const visible=INTL.filter(d=>{
+    if(intlFilter.dur&&intlFlightClass(d.flightH)!==intlFilter.dur)return false;
+    if(intlFilter.themes.size&&!d.themes.some(t=>intlFilter.themes.has(t)))return false;
+    if(bud&&d.estAirfare[0]>bud)return false;
+    if(intlFilter.search){
+      const q=intlFilter.search.toLowerCase();
+      if(![d.name,d.country,d.region,...d.highlights].join(' ').toLowerCase().includes(q))return false;
+    }
+    return true;
+  });
+  const cnt=document.getElementById('intlCount');
+  if(cnt)cnt.textContent=`${visible.length} of ${INTL.length}`;
+  if(empty)empty.style.display=visible.length?'none':'block';
+  const visSet=new Set(visible.map(d=>d.id));
+  grid.innerHTML=INTL.map(d=>{
+    const fc=intlFlightClass(d.flightH);
+    const fcLbl={s:'Short',m:'Medium',l:'Long'}[fc];
+    const fare=intlFares[d.id];
+    const hlHtml=d.highlights.map(h=>`<li>${h}</li>`).join('');
+    const tagHtml=d.themes.map(t=>{const th=THEMES[t];
+      return th?`<span class="tg" style="background:${th[1]}">${th[0]}</span>`:''}).join('');
+    const visaHtml=d.visaFree?`<span class="intl-visa">✓ Visa-free</span>`:'';
+    const fareHtml=fare
+      ?`<div class="intl-live"><b>${fare}</b></div>`
+      :`<div class="intl-live" data-intl-live="${d.id}"></div>`;
+    return `<div class="intl-card${visSet.has(d.id)?'':' dim'}" data-intl-id="${d.id}">
+      <div class="intl-top">
+        <div><div class="intl-dest">${d.flag} ${d.name}</div>
+          <div class="intl-sub">${d.country} · ${d.region}</div></div>
+        <span class="intl-fbadge ${fc}">${fcLbl} · ${d.flightH}h</span>
+      </div>
+      <div class="card-tags">${tagHtml}${visaHtml}</div>
+      <ul class="intl-hl">${hlHtml}</ul>
+      <div class="intl-season"><b>Best</b>${d.season}</div>
+      <div class="intl-foot">
+        <div class="intl-est">Est. airfare 4 pax RT: <b>$${d.estAirfare[0].toLocaleString()}–$${d.estAirfare[1].toLocaleString()}</b></div>
+        <button class="updateBtn" data-intl-fetch="${d.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2l5.8 5.8L6.2 16l3 3 3-1.4 5.8 5.8 1.2-8.2z"/></svg>Fetch fare</button>
+      </div>
+      ${fareHtml}
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('[data-intl-fetch]').forEach(btn=>{
+    btn.addEventListener('click',()=>fetchIntlFare(btn.dataset.intlFetch,btn));
+  });
+}
+
+function renderIntlThemeChips(){
+  const row=document.getElementById('intlThemeChips');
+  if(!row)return;
+  const used=new Set(INTL.flatMap(d=>d.themes));
+  row.innerHTML=Object.entries(THEMES)
+    .filter(([k])=>used.has(k))
+    .map(([k,v])=>
+      `<button class="chip" data-intl-theme="${k}" aria-pressed="false">` +
+      `<span class="swatch" style="background:${v[1]}"></span>${v[0]}</button>`)
+    .join('');
+  row.querySelectorAll('[data-intl-theme]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const t=btn.dataset.intlTheme;
+      const on=btn.getAttribute('aria-pressed')==='true';
+      btn.setAttribute('aria-pressed',on?'false':'true');
+      if(on)intlFilter.themes.delete(t);else intlFilter.themes.add(t);
+      renderIntl();
+    });
+  });
+}
+
+async function fetchIntlFare(destId,btn){
+  const dest=INTL.find(d=>d.id===destId);if(!dest)return;
+  const dep=document.getElementById('intlDep')?.value||'ATL';
+  const depart=document.getElementById('intlDepart')?.value;
+  const ret=document.getElementById('intlReturn')?.value;
+  if(!depart){showToast('Set an outbound date first.');return;}
+  const adults=Math.max(1,Math.round(num('adults')));
+  const kids=Math.max(0,Math.round(num('kids')));
+  const card=btn.closest('.intl-card');
+  const liveEl=card?.querySelector('[data-intl-live]')||card?.querySelector('.intl-live');
+  const origLabel=btn.innerHTML;
+  btn.innerHTML='Searching…';btn.disabled=true;
+  if(liveEl)liveEl.innerHTML=`<span style="color:var(--muted);font-size:12px">Fetching live fare…</span>`;
+  try{
+    const q=`/api/flights?from=${dep}&to=${dest.airport}&depart=${depart}` +
+            `${ret?`&return=${ret}`:''}&adults=${adults}&children=${kids}&currency=USD`;
+    const r=await fetch(q);const d=await r.json();
+    const cash=d&&d.bestCash&&typeof d.bestCash.effectiveUsd==='number'?d.bestCash.effectiveUsd:null;
+    if(cash!=null){
+      const msg=`$${Math.round(cash).toLocaleString()} · live · ${adults+kids} pax from ${dep}`;
+      intlFares[destId]=msg;
+      if(liveEl)liveEl.innerHTML=`<b>$${Math.round(cash).toLocaleString()}</b> — live fare · ${adults} adult${adults!==1?'s':''}+${kids} kid${kids!==1?'s':''} from ${dep}`;
+    }else{
+      const uncfg=d?.sources&&!d.sources.kiwi?.configured&&!d.sources.serpapi?.configured;
+      const msg=uncfg?'Add KIWI_API_KEY or SERPAPI_KEY to Vercel for live fares.':'No fares found — try different dates.';
+      if(liveEl)liveEl.innerHTML=`<span style="color:var(--muted);font-size:12px">${msg}</span>`;
+    }
+  }catch(e){
+    if(liveEl)liveEl.innerHTML=`<span style="color:var(--muted);font-size:12px">Fare lookup error — check API keys.</span>`;
+  }finally{
+    btn.innerHTML=origLabel;btn.disabled=false;
+  }
+}
+
+function resetIntlFilters(){
+  intlFilter={dur:null,themes:new Set(),budget:5000,search:''};
+  const b=document.getElementById('intlBudget');if(b)b.value=5000;
+  const s=document.getElementById('intlSearch');if(s)s.value='';
+  document.querySelectorAll('[data-intl-dur],[data-intl-theme]').forEach(b=>b.setAttribute('aria-pressed','false'));
+  renderIntl();
+}
+document.getElementById('intlBudget')?.addEventListener('input',renderIntl);
+document.getElementById('intlSearch')?.addEventListener('input',e=>{intlFilter.search=e.target.value;renderIntl();});
+document.querySelectorAll('[data-intl-dur]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const dur=btn.dataset.intlDur;
+    const on=btn.getAttribute('aria-pressed')==='true';
+    document.querySelectorAll('[data-intl-dur]').forEach(b=>b.setAttribute('aria-pressed','false'));
+    intlFilter.dur=on?null:dur;
+    if(!on)btn.setAttribute('aria-pressed','true');
+    renderIntl();
+  });
+});
+document.getElementById('intlReset')?.addEventListener('click',resetIntlFilters);
+document.getElementById('intlReset2')?.addEventListener('click',resetIntlFilters);
+
 // ---- render orchestration + backend hydration ----
 // renderAll() repaints every data-driven section from the current in-memory
 // data. It runs once at boot with the baked-in data (instant, offline-safe),
@@ -1850,6 +2196,8 @@ function renderPlaybooks(){
 function renderAll(){
   renderCorridors();
   renderThemeChips();
+  renderIntlThemeChips();
+  renderIntl();
   renderLibrary();
   renderQuickRoutes();
   renderPlaybooks();
@@ -1895,7 +2243,7 @@ hydrateFromApi();
 // ---- nav active-state via IntersectionObserver ----
 (function(){
   const links=document.querySelectorAll('.nav-link');
-  const ids=['network','budget','library','playbooks','strategy'];
+  const ids=['network','budget','intl','library','playbooks','strategy'];
   const map={};ids.forEach(id=>{const a=document.querySelector(`.nav-link[href="#${id}"]`);if(a)map[id]=a;});
   let active=null;
   const io=new IntersectionObserver(entries=>{
